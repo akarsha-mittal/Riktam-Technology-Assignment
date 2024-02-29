@@ -15,7 +15,7 @@ const MessageSchema = mongoose.model(
       required: true 
     },
     content: {type : String },
-    likes: {type : Number,default:0}
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },{ timestamps :true,versionKey:false}),
 );
 

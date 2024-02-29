@@ -292,11 +292,21 @@ io.on('connection', (socket) => {
  */
 exports.LikeMessage = async (req, res) => {
   try {
-    console.log(req.params.member_id)
-    const message  = await Message.findOne({_id:req.params.member_id});
-    var likes      = (message) ? (message.likes +1) : 1;
-    await Message.findByIdAndUpdate({_id:req.params.member_id},{likes})
-    res.status(200).send({status:"success",likes});
+    await Message.findByIdAndUpdate({_id:req.params.message_id}, { $addToSet: { likes: req.session.userId } });
+    res.status(200).send({status:"success"});
+  } catch (error) {
+    res.status(500).send({status:"error"});
+  }
+};
+/**
+ * This function is used to dislike message
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.DislikeMessage = async (req, res) => {
+  try {
+    await Message.findByIdAndUpdate({_id:req.params.message_id}, { $pull: { likes: req.session.userId } });
+    res.status(200).send({status:"success"});
   } catch (error) {
     res.status(500).send({status:"error"});
   }

@@ -78,20 +78,29 @@
   <div id="messages">
     <% messages.forEach(message => { %>
       <%
-        const dateObject = new Date(message.updatedAt);
-        const formattedTime = dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        var dateObject = new Date(message.updatedAt);
+        var formattedTime = dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        var likes = (message.likes.length!=0) ? message.likes.length : 0;
+        var message_likes_array = message.likes;
+        var userIdToFindString = user_id.toString();
+        var current_user_like = message_likes_array.some(user => user.toString() === userIdToFindString);
       %>
         <% if(message.user_details[0]._id == user_id){ %>
           <div style="float: right;width: 90%;display: flex;">
           <div class="container darker">
            
-            <p class="time-right2"><%= formattedTime %></p>
+            <p class="time-right2"><%= formattedTime  %></p>
             <br>
             <p class="time-right1"><strong><%= message.content %> </strong></p>
-            
-            <a onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
-                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :'' %></span>
+            <% if(current_user_like==true){ %>
+              <a onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small" title="Remove Like" id="like-button-<%= message._id %>">
+                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
               </a>
+            <% } else{ %>
+              <a onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small" title="Like Message" id="like-button-<%= message._id %>">
+                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
+              </a>
+              <% } %>
           </div>
           <p class="time-right" >You</p>
         </div>
@@ -102,9 +111,15 @@
               <p class="time-left2"><%= formattedTime %></p>
               <br>
               <p class="time-left1"><strong><%= message.content %></strong></p>
-              <a style="float: right;" onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
-                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :''  %></span>
+              <% if(current_user_like==true){ %>
+                <a style="float: right;" onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small" title="Remove Like" id="like-button-<%= message._id %>">
+                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
                 </a>
+              <% } else{ %>
+                <a style="float: right;"  onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small" title="Like Message" id="like-button-<%= message._id %>">
+                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
+                </a>
+                <% } %>
             </div>
           </div>
           <% } %>
@@ -121,9 +136,8 @@
     </form>
   </div>
   <script>
-    function likeMessage(member_id,likes) {
-      console.log(likes)
-      fetch('/group/like_message/'+member_id) // Modify the endpoint based on your server setup
+    function likeMessage(message_id,likes) {
+      fetch('/group/like_message/'+message_id) // Modify the endpoint based on your server setup
       .then(response => {
         if (response.ok) {
           return response.json(); // Assuming the server sends JSON data
@@ -132,15 +146,45 @@
         }
       })
       .then(data => {
-        console.log("like-count-" + member_id); // Assuming the server sends the updated like count
-        var updatedLikes = Number(data.likes);
-        document.getElementById("like-count-" + member_id).innerText = updatedLikes;
+        if(data.status=="success"){
+          var updatedLikes = Number(likes) + 1;
+          document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
+          document.getElementById("like-button-" + message_id).classList.add('btn-warning');
+          document.getElementById("like-button-" + message_id).classList.remove('btn-secondary');
+          document.getElementById("like-button-" + message_id).title = "Remove Like";
+          document.getElementById("like-button-" + message_id).onclick = function() { dislikeMessage(message_id,updatedLikes) };
+
+        }
+        
       })
         .catch(error => {
           console.error('Error:', error);
         });
-
-  }
+    }
+    function dislikeMessage(message_id,likes) {
+      fetch('/group/dislike_message/'+message_id) // Modify the endpoint based on your server setup
+      .then(response => {
+        if (response.ok) {
+          return response.json(); // Assuming the server sends JSON data
+        } else {
+          throw new Error('Failed to like the message');
+        }
+      })
+      .then(data => {
+        if(data.status=="success"){
+          var updatedLikes = Number(likes) - 1;
+          document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
+          document.getElementById("like-button-" + message_id).classList.remove('btn-warning');
+          document.getElementById("like-button-" + message_id).classList.add('btn-secondary');
+          document.getElementById("like-button-" + message_id).title = "Like Message";
+          document.getElementById("like-button-" + message_id).onclick = function() { likeMessage(message_id,updatedLikes) };
+        }
+        
+      })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
     const socket = io();
 
     document.getElementById('messageForm').addEventListener('submit', (event) => {
