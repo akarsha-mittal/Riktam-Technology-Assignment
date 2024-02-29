@@ -1,7 +1,7 @@
 # Riktam Technology Assignment
 
 ## Requirements:
-- Database (MongoDB) Free
+- MongoDB Database. For development i have used free mongodb.
 
 ## Create .env file
 First step is to create a .env file to store credentials. Example below:
