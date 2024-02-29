@@ -27,7 +27,8 @@
         <th scope="col">Last Name</th>
         <th scope="col">Email</th>
         <% if(user_type=="admin"){ %>
-        <th scope="col" class="text-end">Action</th>
+          <th scope="col">User Type</th>
+          <th scope="col" class="text-end">Action</th>
         <% } %>
 
       </tr>
@@ -40,17 +41,14 @@
           <td><%= user.last_name %></td>
           <td><%= user.email %></td>
           <% if(user_type=="admin"){ %>
-
-          <td class="text-end">
-
-            <div class="d-flex flex-row justify-content-end gap-2">
-              <a href="/user/edit/<%= user._id %>" type="button" class="btn btn-warning btn-small">
-                <i class="bi bi-pencil"></i>
-              </a>
-            </div>
-
-
-          </td>
+            <td><%= user.user_type %></td>
+            <td class="text-end">
+              <div class="d-flex flex-row justify-content-end gap-2">
+                <a href="/user/edit/<%= user._id %>" type="button" class="btn btn-warning btn-small">
+                  <i class="bi bi-pencil"></i>
+                </a>
+              </div>
+            </td>
           <% } %>
 
         </tr>

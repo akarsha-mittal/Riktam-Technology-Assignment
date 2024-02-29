@@ -9,8 +9,8 @@
       padding: 10px 10px 0px 10px;
       bottom: 0;
       width: 96%;
-      height: 40px;
       color: white;
+      margin-bottom: 20px;
   }
   .container {
     border: 2px solid #dedede;
@@ -46,20 +46,29 @@
   }
   
   .time-right {
-    float: right;
+    margin-top: 30px;
+    margin-left: 10px;
     color: black;
   }
   .time-right1 {
     float: right;
     color: blue;
   }
+  .time-right2 {
+    float: right;
+    color: grey;
+  }
   .time-left {
-    float: left;
+    margin-top: 30px;
     color: black;
   }
   .time-left1 {
     float: left;
     color: blue;
+  }
+  .time-left2 {
+    float: left;
+    color: grey;
   }
   </style>
   </head>
@@ -68,26 +77,36 @@
   <% } %>
   <div id="messages">
     <% messages.forEach(message => { %>
+      <%
+        const dateObject = new Date(message.updatedAt);
+        const formattedTime = dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      %>
         <% if(message.user_details[0]._id == user_id){ %>
-          <div class="container darker" style="width: 100%;float: right;">
-            <p class="time-right">You</p>
+          <div style="float: right;width: 90%;display: flex;">
+          <div class="container darker">
+           
+            <p class="time-right2"><%= formattedTime %></p>
             <br>
-            <p class="time-right1"><strong><%= message.content %></strong></p>
-            <br>
+            <p class="time-right1"><strong><%= message.content %> </strong></p>
+            
             <a onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
                 <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :'' %></span>
               </a>
           </div>
+          <p class="time-right" >You</p>
+        </div>
         <% } else{ %>
-          <div class="container" style="width: 100%;float: left;">
+          <div style="float: left;width: 90%;display: flex;">
             <p class="time-left"><%= message.user_details[0].first_name  %> <%= message.user_details[0].last_name  %></p>
-            <br><p class="time-left1"><strong><%= message.content %></strong></p>
-            <br>
-            <a onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
-                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :''  %></span>
-              </a>
+            <div class="container">
+              <p class="time-left2"><%= formattedTime %></p>
+              <br>
+              <p class="time-left1"><strong><%= message.content %></strong></p>
+              <a style="float: right;" onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
+                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :''  %></span>
+                </a>
+            </div>
           </div>
-
           <% } %>
     <% }); %>
   </div>
@@ -97,8 +116,8 @@
     <form id="messageForm" action="/group/send_messages/<%= group_id %>" method="post">
       <input type="hidden" id="message_user_id" name="message_user_id" required>
       <input type="hidden" id="message_group_id" name="message_group_id" required>
-      <input type="text" id="content" name="content" required style="width: 82%;">
-      <button type="submit">Send</button>
+      <input type="text" id="content" name="content" required style="width: 82%;border-radius: 10px;height: 35px;">
+      <button type="submit" class="btn btn-success btn-small"><i class="bi bi-send-fill"></i></button>
     </form>
   </div>
   <script>

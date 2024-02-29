@@ -8,19 +8,36 @@ const bcrypt = require("bcryptjs");
  */
 exports.index = async (req, res) => {
   const messages = await req.flash("info");
-  let perPage = 2;
+  let perPage = 12;
   let page = req.query.page || 1;
 
   try {
     var query = {};
-    if (req.query.search) {
-      query = {
-        $or: [
-          { first_name: { $regex: req.query.search, $options: 'i' } }, // Case-insensitive
-          { last_name: { $regex: req.query.search, $options: 'i' } },
-          { email: { $regex: req.query.search, $options: 'i' } }
-        ]
-      };
+    if(req.session.user_type=="admin"){
+      if (req.query.search) {
+        query = {
+          $or: [
+            { first_name: { $regex: req.query.search, $options: 'i' } }, // Case-insensitive
+            { last_name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: 'i' } }
+          ],
+        };
+      }
+    }
+    else{
+      if (req.query.search) {
+        query = {
+          $or: [
+            { first_name: { $regex: req.query.search, $options: 'i' } }, // Case-insensitive
+            { last_name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: 'i' } }
+          ],
+          user_type:"user"
+        };
+      }
+      else{
+        query ={user_type:"user"};
+      }
     }
     
     const users = await User.find(query)

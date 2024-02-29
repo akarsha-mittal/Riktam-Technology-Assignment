@@ -31,12 +31,12 @@
   <div class="row form-group mb-4">
     <div class="col">
       <label for="first_name">First Name</label>
-      <input type="text" class="form-control" id="first_name" name="first_name" value="<%= user.first_name %>" placeholder="First Name" required>
+      <input type="text" class="form-control" id="first_name" name="first_name" value="<%= user.first_name %>" placeholder="First Name" required maxlength="8">
     </div>
 
     <div class="col">
       <label for="last_name">Last Name</label>
-      <input type="text" class="form-control" id="last_name" name="last_name" value="<%= user.last_name %>" placeholder="Last Name" required>
+      <input type="text" class="form-control" id="last_name" name="last_name" value="<%= user.last_name %>" placeholder="Last Name" required maxlength="8">
     </div>
   </div>
 
@@ -51,7 +51,7 @@
 
     <div class="col">
       <label for="email">Email</label>
-      <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" placeholder="Email" required disabled>
+      <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" placeholder="Email" required disabled >
     </div>
   </div>
 
@@ -59,12 +59,12 @@
   <div class="row form-group mb-4">
     <div class="col">
       <label for="password">Password</label>
-      <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password">
+      <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" minlength="8" maxlength="16">
     </div>
 
     <div class="col">
       <label for="confirm_password">Confirm Password</label>
-      <input type="password" class="form-control" id="confirm_password" name="confirm_password" value="" placeholder="Confirm Password">
+      <input type="password" class="form-control" id="confirm_password" name="confirm_password" value="" placeholder="Confirm Password" minlength="8" maxlength="16">
     </div>
   </div>
 

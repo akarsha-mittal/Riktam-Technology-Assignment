@@ -103,25 +103,6 @@ exports.saveGroup = async (req, res) => {
   }
 };
 
-/**
- * This function is used to load edit group page.
- * @param {*} req 
- * @param {*} res 
- */
-exports.edit = async (req, res) => {
-  try {
-    if(req.session.user_type=="user"){
-      const messages = await req.flash("error");
-      const group = await Group.findOne({ _id: req.params.id });
-      res.render("group/edit", { group,messages, user_type:req.session.user_type });
-    }
-    else{
-      return res.redirect("/group");
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 /**
  * This function is used to update group
@@ -262,7 +243,8 @@ exports.getMessagesBasedOnGroup = async (req,res) =>{
         _id: 1, // Exclude the _id field if needed
         content: 1, // Include the fields you want from the primary collection
         user_details: 1, // Include the joined documents from the secondary collection
-        likes:1
+        likes:1,
+        updatedAt:1
       },
     },
     {
