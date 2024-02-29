@@ -1,5 +1,15 @@
-# Riktam-Technology-Assignment
-I have used mongo db database in developing this project
-You can change MongoDBURI in .env file
-To run test cases run npm test command
-To run project run npm start or command
+# Riktam Technology Assignment
+
+## Requirements:
+- Database (MongoDB) Free
+
+## Create .env file
+First step is to create a .env file to store credentials. Example below:
+
+MONGODB_URI = mongodb+srv://<username>:<password>@mongodburl
+
+## Installation
+To install and run this project we need to install dependencies using npm and then start server using following commands--
+
+npm install
+npm start
