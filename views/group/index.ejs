@@ -1,0 +1,140 @@
+<style>
+  /* Add styles for the modal overlay */
+  .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 42%;
+      width: 20%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .modal-content {
+      background-color: grey;
+      padding: 20px;
+      border-radius: 5px;
+      position: relative;
+  }
+
+  .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+  }
+</style>
+<div class="d-flex justify-content-between flex-wrap flex-md nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h2> Groups </h2>
+  <% if(user_type=="user"){ %>
+  <div class="btn-toolbar mb-2 mb-md 0">
+    <div class="btn-group me-2">
+      <a href="/group/add" class="btn btn-sm btn-outline-secondary">+ New Group</a>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<% messages.forEach(msg => { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% }) %>
+
+<div class="table-responsive">
+
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col" class="text-end">Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% groups.forEach(group => { %>
+        <tr class="align-middle">
+          <td><a href="/group/get_messages/<%= group._id %>" title="Click to chat"><%= group.name %></a>
+          </td>
+          <td class="text-end">
+            <div class="d-flex flex-row justify-content-end gap-2">
+              <a onclick="openModal('<%= group._id %>','<%= group.name %>')" type="button" class="btn btn-warning btn-small" title="Change group name">
+                <i class="bi bi-person-circle"></i>
+              </a>
+              <a href="/group/view_members/<%= group._id %>" title="View Members" type="button" class="btn btn-primary btn-small">
+                <i class="bi bi-people"></i>
+              </a>
+              <a onclick="deleteGroup('<%= group._id %>')" title="Delete Group" type="button" class="btn btn-danger btn-small">
+                <i class="bi bi-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<div id="myModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2>Change Group Name</h2>
+    <form action="" method="POST" id="change_group_name_form">
+
+      <div class="row form-group mb-4">
+        <div class="col">
+          <label for="name">Group Name</label>
+          <input type="text" class="form-control" id="group_name" name="name" placeholder="Group Name" required>
+        </div>
+      </div>
+      <div class="row form-group mb-4">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    
+    </form>
+    <div class="row form-group mb-4">
+      <button onclick="closeModal()" class="btn btn-danger">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="id01" class="modal-overlay">
+  <form class="modal-content" action="" id="delete_group_modal" method="POST">
+    <div class="container">
+      <h1>Delete Group</h1>
+      <p>Are you sure you want to delete this group?</p>
+    
+      <div class="clearfix">
+        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+        <button type="submit" onclick="document.getElementById('id01').style.display='none'" class="deletebtn">Delete</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+  // JavaScript functions to open and close the modal
+  function openModal(group_id,group_name) {
+      document.getElementById("group_name").value = group_name;
+      document.getElementById('change_group_name_form').action = '/group/edit/'+group_id+'?_method=PUT';
+      document.getElementById('myModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+      document.getElementById('myModal').style.display = 'none';
+  }
+
+  function deleteGroup(group_id) {
+      document.getElementById('delete_group_modal').action = '/group/delete/'+group_id+'?_method=DELETE';
+      document.getElementById('id01').style.display = 'flex';
+  }
+  // Get the modal
+  var modal = document.getElementById('id01');
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>

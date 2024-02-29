@@ -1,0 +1,29 @@
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+  <div class="position-sticky pt-3 sidebar-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="/user">
+          <i class="bi bi-house"></i>
+          Users
+        </a>
+      </li>
+      <% if(user_type == "user"){ %>
+      <li class="nav-item">
+        <a class="nav-link" href="/group">
+          <i class="bi bi-people"></i>
+          Groups
+        </a>
+      </li>
+      <% } %>
+
+      <li class="nav-item">
+        <form method="POST", action="/logout" id="logoutForm">
+          <a class="nav-link" href="#" onclick="document.getElementById('logoutForm').submit();">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+          </a>
+        </form>
+      </li>
+    </ul>
+  </div>
+</nav>

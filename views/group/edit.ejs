@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between flex-wrap flex-md nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Edit Group</h1>
+  <div class="btn-toolbar mb-2 mb-md 0">
+    <div class="btn-group me-2">
+    </div>
+  </div>
+</div>
+<% messages.forEach(msg => { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% }) %>
+<div class="col py-3">
+  <div class="row">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/user">Groups</a></li>
+          <li class="breadcrumb-item active">Edit Group</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+</div>
+
+
+<form action="/group/edit/<%= group._id %>?_method=PUT" method="POST">
+
+  <div class="row form-group mb-4">
+    <div class="col">
+      <label for="name">Group Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="<%= group.name %>" placeholder="Group Name" required>
+    </div>
+  </div>
+
+  <div class="row form-group mb-4">
+    <div class="col">
+      <label for="members">Add Members</label>
+      <select class="form-control select2" id="members" name="members[]" multiple>
+        <% users.forEach(user => { %>
+          <option value="<%= user._id %>"> <%= user.first_name %> <%= user.last_name %> ( <%= user.email %> ) </option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+  <div class="form-group mb-4">
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+
+</form>

@@ -1,0 +1,77 @@
+<div class="d-flex justify-content-between flex-wrap flex-md nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Add User</h1>
+  <div class="btn-toolbar mb-2 mb-md 0">
+    <div class="btn-group me-2">
+    </div>
+  </div>
+</div>
+<% messages.forEach(msg => { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% }) %>
+<div class="col py-3">
+  <div class="row">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/user">Users</a></li>
+          <li class="breadcrumb-item active">New User</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+</div>
+
+
+<form action="/user/add" method="POST">
+
+  <div class="row form-group mb-4">
+    <div class="col">
+      <label for="first_name">First Name</label>
+      <input type="text" class="form-control" id="first_name" name="first_name" value="" placeholder="First Name" required>
+    </div>
+
+    <div class="col">
+      <label for="last_name">Last Name</label>
+      <input type="text" class="form-control" id="last_name" name="last_name" value="" placeholder="Last Name" required>
+    </div>
+  </div>
+
+  <div class="row form-group mb-4">
+    <div class="col">
+      <label for="user_type">User Type</label>
+      <select class="form-control" id="user_type" name="user_type">
+        <option value="admin"> Admin </option>
+        <option value="user"> User </option>
+      </select>
+    </div>
+
+    <div class="col">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" value="" placeholder="Email" required>
+    </div>
+  </div>
+
+
+  <div class="row form-group mb-4">
+    <div class="col">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" required>
+    </div>
+
+    <div class="col">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" class="form-control" id="confirm_password" name="confirm_password" value="" placeholder="Confirm Password" required>
+    </div>
+  </div>
+
+  <div class="form-group mb-4">
+    <button type="submit" class="btn btn-primary">Save</button>
+  </div>
+
+  
+
+</form>

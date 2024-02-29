@@ -1,0 +1,149 @@
+<style>
+#main11 {
+  /* border: solid; */
+  width: 100%;
+  height: 1000px;
+}  
+ #footer {
+      position: fixed;
+      padding: 10px 10px 0px 10px;
+      bottom: 0;
+      width: 96%;
+      height: 40px;
+      color: white;
+  }
+  .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .darker {
+    border-color: #ccc;
+    background-color: #ddd;
+  }
+  
+  .container::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+  
+  .container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+  }
+  
+  .time-right {
+    float: right;
+    color: black;
+  }
+  .time-right1 {
+    float: right;
+    color: blue;
+  }
+  .time-left {
+    float: left;
+    color: black;
+  }
+  .time-left1 {
+    float: left;
+    color: blue;
+  }
+  </style>
+  </head>
+  <% if(group && group.name){ %>
+    <h1><%= group.name %></h1>
+  <% } %>
+  <div id="messages">
+    <% messages.forEach(message => { %>
+        <% if(message.user_details[0]._id == user_id){ %>
+          <div class="container darker" style="width: 100%;float: right;">
+            <p class="time-right">You</p>
+            <br>
+            <p class="time-right1"><strong><%= message.content %></strong></p>
+            <br>
+            <a onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
+                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :'' %></span>
+              </a>
+          </div>
+        <% } else{ %>
+          <div class="container" style="width: 100%;float: left;">
+            <p class="time-left"><%= message.user_details[0].first_name  %> <%= message.user_details[0].last_name  %></p>
+            <br><p class="time-left1"><strong><%= message.content %></strong></p>
+            <br>
+            <a onclick="likeMessage('<%= message._id %>','<%= message.likes %>')" type="button" class="btn btn-warning btn-small" title="Like message">
+                <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (message.likes!=0) ? message.likes :''  %></span>
+              </a>
+          </div>
+
+          <% } %>
+    <% }); %>
+  </div>
+  <div id="main11"></div>
+
+  <div id="footer">
+    <form id="messageForm" action="/group/send_messages/<%= group_id %>" method="post">
+      <input type="hidden" id="message_user_id" name="message_user_id" required>
+      <input type="hidden" id="message_group_id" name="message_group_id" required>
+      <input type="text" id="content" name="content" required style="width: 82%;">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script>
+    function likeMessage(member_id,likes) {
+      console.log(likes)
+      fetch('/group/like_message/'+member_id) // Modify the endpoint based on your server setup
+      .then(response => {
+        if (response.ok) {
+          return response.json(); // Assuming the server sends JSON data
+        } else {
+          throw new Error('Failed to like the message');
+        }
+      })
+      .then(data => {
+        console.log("like-count-" + member_id); // Assuming the server sends the updated like count
+        var updatedLikes = Number(data.likes);
+        document.getElementById("like-count-" + member_id).innerText = updatedLikes;
+      })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+  }
+    const socket = io();
+
+    document.getElementById('messageForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const content = document.getElementById('content').value;
+      const user_id = document.getElementById('message_user_id').value;
+      const group_id = document.getElementById('message_group_id').value;
+
+      // Emit the new message to the server
+      socket.emit('message', { user_id,group_id,content });
+
+      // Clear the input fields
+      document.getElementById('content').value = '';
+    });
+
+    // Listen for new messages from the server
+    socket.on('message', (message) => {
+      const messagesContainer = document.getElementById('messages');
+      const messageElement = document.createElement('p');
+      messageElement.innerHTML = `<strong>${message.user_id}:</strong> ${message.content}`;
+      messagesContainer.appendChild(messageElement);
+    });
+    
+  </script>
+

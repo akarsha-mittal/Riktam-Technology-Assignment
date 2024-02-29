@@ -1,0 +1,13 @@
+const express = require('express');
+const router = express.Router();
+const user_controller = require('../controllers/user_controller');
+const { verifyUser } = require('../middleware/verify_login');
+router.use(verifyUser);
+router.get('/', user_controller.index);
+router.get('/add', user_controller.addUser);
+router.post('/add', user_controller.saveCustomer);
+router.get('/edit/:id', user_controller.edit);
+router.put('/edit/:id', user_controller.updateUser);
+router.post('/get', user_controller.getUser);
+router.post('/recent_user', user_controller.LastInsertedUser);
+module.exports = router;
