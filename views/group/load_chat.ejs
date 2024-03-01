@@ -1,212 +1,139 @@
-<style>
-#main11 {
-  /* border: solid; */
-  width: 100%;
-  height: 1000px;
-}  
- #footer {
-      position: fixed;
-      padding: 10px 10px 0px 10px;
-      bottom: 0;
-      width: 96%;
-      color: white;
-      margin-bottom: 20px;
-  }
-  .container {
-    border: 2px solid #dedede;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px 0;
-  }
-  
-  .darker {
-    border-color: #ccc;
-    background-color: #ddd;
-  }
-  
-  .container::after {
-    content: "";
-    clear: both;
-    display: table;
-  }
-  
-  .container img {
-    float: left;
-    max-width: 60px;
-    width: 100%;
-    margin-right: 20px;
-    border-radius: 50%;
-  }
-  
-  .container img.right {
-    float: right;
-    margin-left: 20px;
-    margin-right:0;
-  }
-  
-  .time-right {
-    margin-top: 30px;
-    margin-left: 10px;
-    color: black;
-  }
-  .time-right1 {
-    float: right;
-    color: blue;
-  }
-  .time-right2 {
-    float: right;
-    color: grey;
-  }
-  .time-left {
-    margin-top: 30px;
-    color: black;
-  }
-  .time-left1 {
-    float: left;
-    color: blue;
-  }
-  .time-left2 {
-    float: left;
-    color: grey;
-  }
-  </style>
-  </head>
-  <% if(group && group.name){ %>
-    <h1><%= group.name %></h1>
-  <% } %>
-  <div id="messages">
-    <% messages.forEach(message => { %>
-      <%
-        var dateObject = new Date(message.updatedAt);
-        var formattedTime = dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-        var likes = (message.likes.length!=0) ? message.likes.length : 0;
-        var message_likes_array = message.likes;
-        var userIdToFindString = user_id.toString();
-        var current_user_like = message_likes_array.some(user => user.toString() === userIdToFindString);
-      %>
-        <% if(message.user_details[0]._id == user_id){ %>
-          <div style="float: right;width: 90%;display: flex;">
-          <div class="container darker">
-           
-            <p class="time-right2"><%= formattedTime  %></p>
+<link rel="stylesheet" href="/css/load_chat.css">
+<% if(group && group.name){ %>
+  <h1><%= group.name %></h1>
+<% } %>
+<div id="messages">
+  <% messages.forEach(message => { %>
+    <%
+      var dateObject = new Date(message.updatedAt);
+      var formattedTime = dateObject.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+      var likes = (message.likes.length!=0) ? message.likes.length : 0;
+      var message_likes_array = message.likes;
+      var userIdToFindString = user_id.toString();
+      var current_user_like = message_likes_array.some(user => user.toString() === userIdToFindString);
+    %>
+      <% if(message.user_details[0]._id == user_id){ %>
+        <div id="you_div">
+        <div class="container darker">
+          
+          <p class="time-right2"><%= formattedTime  %></p>
+          <br>
+          <p class="time-right1"><strong><%= message.content %> </strong></p>
+          <% if(current_user_like==true){ %>
+            <a onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small" title="Remove Like" id="like-button-<%= message._id %>">
+              <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
+            </a>
+          <% } else{ %>
+            <a onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small" title="Like Message" id="like-button-<%= message._id %>">
+              <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
+            </a>
+            <% } %>
+        </div>
+        <p class="time-right" >You</p>
+      </div>
+      <% } else{ %>
+        <div id="other_msg_div">
+          <p class="time-left"><%= message.user_details[0].first_name  %> <%= message.user_details[0].last_name  %></p>
+          <div class="container">
+            <p class="time-left2"><%= formattedTime %></p>
             <br>
-            <p class="time-right1"><strong><%= message.content %> </strong></p>
+            <p class="time-left1"><strong><%= message.content %></strong></p>
             <% if(current_user_like==true){ %>
-              <a onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small" title="Remove Like" id="like-button-<%= message._id %>">
+              <a onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small like_tag" title="Remove Like" id="like-button-<%= message._id %>">
                 <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
               </a>
             <% } else{ %>
-              <a onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small" title="Like Message" id="like-button-<%= message._id %>">
+              <a  onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small like_tag" title="Like Message" id="like-button-<%= message._id %>">
                 <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
               </a>
               <% } %>
           </div>
-          <p class="time-right" >You</p>
         </div>
-        <% } else{ %>
-          <div style="float: left;width: 90%;display: flex;">
-            <p class="time-left"><%= message.user_details[0].first_name  %> <%= message.user_details[0].last_name  %></p>
-            <div class="container">
-              <p class="time-left2"><%= formattedTime %></p>
-              <br>
-              <p class="time-left1"><strong><%= message.content %></strong></p>
-              <% if(current_user_like==true){ %>
-                <a style="float: right;" onclick="dislikeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-warning btn-small" title="Remove Like" id="like-button-<%= message._id %>">
-                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
-                </a>
-              <% } else{ %>
-                <a style="float: right;"  onclick="likeMessage(`<%= message._id %>`,`<%= likes %>`)" type="button" class="btn btn-secondary btn-small" title="Like Message" id="like-button-<%= message._id %>">
-                  <i class="bi bi-hand-thumbs-up"></i><span id="like-count-<%= message._id %>"><%= (likes!=0) ? likes : '' %></span>
-                </a>
-                <% } %>
-            </div>
-          </div>
-          <% } %>
-    <% }); %>
-  </div>
-  <div id="main11"></div>
+        <% } %>
+  <% }); %>
+</div>
+<div id="main11"></div>
 
-  <div id="footer">
-    <form id="messageForm" action="/group/send_messages/<%= group_id %>" method="post">
-      <input type="hidden" id="message_user_id" name="message_user_id" required>
-      <input type="hidden" id="message_group_id" name="message_group_id" required>
-      <input type="text" id="content" name="content" required style="width: 82%;border-radius: 10px;height: 35px;">
-      <button type="submit" class="btn btn-success btn-small"><i class="bi bi-send-fill"></i></button>
-    </form>
-  </div>
-  <script>
-    function likeMessage(message_id,likes) {
-      fetch('/group/like_message/'+message_id) // Modify the endpoint based on your server setup
-      .then(response => {
-        if (response.ok) {
-          return response.json(); // Assuming the server sends JSON data
-        } else {
-          throw new Error('Failed to like the message');
-        }
-      })
-      .then(data => {
-        if(data.status=="success"){
-          var updatedLikes = Number(likes) + 1;
-          document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
-          document.getElementById("like-button-" + message_id).classList.add('btn-warning');
-          document.getElementById("like-button-" + message_id).classList.remove('btn-secondary');
-          document.getElementById("like-button-" + message_id).title = "Remove Like";
-          document.getElementById("like-button-" + message_id).onclick = function() { dislikeMessage(message_id,updatedLikes) };
+<div id="footer">
+  <form id="messageForm" action="/group/send_messages/<%= group_id %>" method="post">
+    <input type="hidden" id="message_user_id" name="message_user_id" required>
+    <input type="hidden" id="message_group_id" name="message_group_id" required>
+    <input type="text" id="content" name="content" required class="content_input">
+    <button type="submit" class="btn btn-success btn-small"><i class="bi bi-send-fill"></i></button>
+  </form>
+</div>
+<script>
+  function likeMessage(message_id,likes) {
+    fetch('/group/like_message/'+message_id) // Modify the endpoint based on your server setup
+    .then(response => {
+      if (response.ok) {
+        return response.json(); // Assuming the server sends JSON data
+      } else {
+        throw new Error('Failed to like the message');
+      }
+    })
+    .then(data => {
+      if(data.status=="success"){
+        var updatedLikes = Number(likes) + 1;
+        document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
+        document.getElementById("like-button-" + message_id).classList.add('btn-warning');
+        document.getElementById("like-button-" + message_id).classList.remove('btn-secondary');
+        document.getElementById("like-button-" + message_id).title = "Remove Like";
+        document.getElementById("like-button-" + message_id).onclick = function() { dislikeMessage(message_id,updatedLikes) };
 
-        }
-        
-      })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-    function dislikeMessage(message_id,likes) {
-      fetch('/group/dislike_message/'+message_id) // Modify the endpoint based on your server setup
-      .then(response => {
-        if (response.ok) {
-          return response.json(); // Assuming the server sends JSON data
-        } else {
-          throw new Error('Failed to like the message');
-        }
-      })
-      .then(data => {
-        if(data.status=="success"){
-          var updatedLikes = Number(likes) - 1;
-          document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
-          document.getElementById("like-button-" + message_id).classList.remove('btn-warning');
-          document.getElementById("like-button-" + message_id).classList.add('btn-secondary');
-          document.getElementById("like-button-" + message_id).title = "Like Message";
-          document.getElementById("like-button-" + message_id).onclick = function() { likeMessage(message_id,updatedLikes) };
-        }
-        
-      })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
-    const socket = io();
+      }
+      
+    })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+  function dislikeMessage(message_id,likes) {
+    fetch('/group/dislike_message/'+message_id) // Modify the endpoint based on your server setup
+    .then(response => {
+      if (response.ok) {
+        return response.json(); // Assuming the server sends JSON data
+      } else {
+        throw new Error('Failed to like the message');
+      }
+    })
+    .then(data => {
+      if(data.status=="success"){
+        var updatedLikes = Number(likes) - 1;
+        document.getElementById("like-count-" + message_id).innerText = (updatedLikes>0) ? updatedLikes : '';
+        document.getElementById("like-button-" + message_id).classList.remove('btn-warning');
+        document.getElementById("like-button-" + message_id).classList.add('btn-secondary');
+        document.getElementById("like-button-" + message_id).title = "Like Message";
+        document.getElementById("like-button-" + message_id).onclick = function() { likeMessage(message_id,updatedLikes) };
+      }
+      
+    })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+  const socket = io();
 
-    document.getElementById('messageForm').addEventListener('submit', (event) => {
-      event.preventDefault();
-      const content = document.getElementById('content').value;
-      const user_id = document.getElementById('message_user_id').value;
-      const group_id = document.getElementById('message_group_id').value;
+  document.getElementById('messageForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const content = document.getElementById('content').value;
+    const user_id = document.getElementById('message_user_id').value;
+    const group_id = document.getElementById('message_group_id').value;
 
-      // Emit the new message to the server
-      socket.emit('message', { user_id,group_id,content });
+    // Emit the new message to the server
+    socket.emit('message', { user_id,group_id,content });
 
-      // Clear the input fields
-      document.getElementById('content').value = '';
-    });
+    // Clear the input fields
+    document.getElementById('content').value = '';
+  });
 
-    // Listen for new messages from the server
-    socket.on('message', (message) => {
-      const messagesContainer = document.getElementById('messages');
-      const messageElement = document.createElement('p');
-      messageElement.innerHTML = `<strong>${message.user_id}:</strong> ${message.content}`;
-      messagesContainer.appendChild(messageElement);
-    });
-    
-  </script>
+  // Listen for new messages from the server
+  socket.on('message', (message) => {
+    const messagesContainer = document.getElementById('messages');
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = `<strong>${message.user_id}:</strong> ${message.content}`;
+    messagesContainer.appendChild(messageElement);
+  });
+  
+</script>
 

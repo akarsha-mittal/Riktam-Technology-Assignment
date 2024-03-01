@@ -1,0 +1,83 @@
+#main11 {
+  /* border: solid; */
+  width: 100%;
+  height: 1000px;
+}  
+ #footer {
+    position: fixed;
+    padding: 10px 10px 0px 10px;
+    bottom: 0;
+    width: 96%;
+    color: white;
+    margin-bottom: 20px;
+}
+  .container {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .darker {
+    border-color: #ccc;
+    background-color: #ddd;
+  }
+  
+  .container::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+  
+  .container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+  }
+  
+  .time-right {
+    margin-top: 30px;
+    margin-left: 10px;
+    color: black;
+  }
+  .time-right1 {
+    float: right;
+    color: blue;
+  }
+  .time-right2 {
+    float: right;
+    color: grey;
+  }
+  .time-left {
+    margin-top: 30px;
+    color: black;
+  }
+  .time-left1 {
+    float: left;
+    color: blue;
+  }
+  .time-left2 {
+    float: left;
+    color: grey;
+  }
+#you_div {
+    float: right;width: 90%;display: flex;
+}
+#other_msg_div{
+    float: left;width: 90%;display: flex;
+}
+.like_tag {
+    float: right;
+}
+.content_input {
+    width: 82%;border-radius: 10px;height: 35px;
+}
