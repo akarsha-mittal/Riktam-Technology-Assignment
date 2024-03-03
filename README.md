@@ -14,13 +14,3 @@ To install and run this project we need to install dependencies using npm and th
 npm install
 
 npm start
-
-After creating MongoDB URI you can run npm test command to insert dummy data. 
-
-To login as admin you can use following creadentials-
-Email- admin@gmail.com
-Password- admin@123
-
-To login as normal user you can use following creadentials-
-Email- user@gmail.com
-Password- user@123
